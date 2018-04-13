@@ -1,0 +1,23 @@
+##Code written by Daniel Evans
+
+library(ggmap)
+library(stringr)
+
+## Import and combine data sheets
+
+wd <- setwd("C:")
+load_data <- function(path) { 
+  files <- list.files( path = wd)
+  tables <- lapply(files, read.csv, sep = "\t")
+  do.call(rbind, tables)
+}
+
+maps <-load_data(wd)
+
+mapped <- str_c(maps$ColumnA, maps$ColumnB, maps$ColumnC, maps$ColumnD, sep= ", ")
+
+mapping <- data.frame (mapped = c (mapped), stringsAsFactors = FALSE)
+
+locations <- geocode(mapping$mapped)
+
+finalLocations <- cbind(mapped, locations)
